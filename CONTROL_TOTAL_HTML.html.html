@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTROL TOTAL - Sistema de Control de Ventas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --main-color: #4f46e5;
+            --secondary-color: #06b6d4;
+            --accent-color: #f59e0b;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f1f5f9;
+            --text-light: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HEADER */
+        header {
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--main-color);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title .logo {
+            font-size: 32px;
+        }
+
+        .header-title h1 {
+            font-size: 20px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* NAVEGACIÓN */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            padding: 12px;
+            border: none;
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-btn:hover {
+            background: var(--main-color);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-btn.active {
+            background: var(--main-color);
+            border-left-color: var(--accent-color);
+        }
+
+        /* BOTONES */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--main-color);
+            color: var(--text-color);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        .btn-accent {
+            background: var(--accent-color);
+            color: var(--text-color);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: var(--text-color);
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        /* FORMULARIOS */
+        .form-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        input, select, textarea {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 2px solid var(--main-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        textarea {
+            grid-column: 1 / -1;
+            min-height: 80px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+
+        /* TARJETAS */
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--main-color);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border-top: 4px solid var(--main-color);
+            text-align: center;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+
+        /* GRID */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .grid-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        /* TABLA SIMPLE */
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--main-color);
+            margin-bottom: 12px;
+        }
+
+        .row-label {
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .row-value {
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid var(--main-color);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* LOGIN */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            border: 2px solid var(--main-color);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .login-box .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .login-box h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--main-color);
+        }
+
+        .pin-input {
+            font-size: 20px !important;
+            text-align: center !important;
+            letter-spacing: 4px;
+            font-family: monospace !important;
+            margin-bottom: 20px;
+        }
+
+        /* HIDE */
+        .hidden {
+            display: none !important;
+        }
+
+        /* CORES */
+        .success { color: #10b981; }
+        .warning { color: var(--accent-color); }
+        .danger { color: #ef4444; }
+        .info { color: var(--secondary-color); }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .nav-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            header {
+                flex-direction: column;
+            }
+
+            .form-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--main-color);
+            border-radius: 4px;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+        }
+
+        .summary {
+            background: var(--bg-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--main-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .summary-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        // ==================== APLICACIÓN ====================
+        class ControlTotal {
+            constructor() {
+                this.config = this.loadConfig();
+                this.data = this.loadData();
+                this.pin = this.loadPin();
+                this.currentUser = localStorage.getItem('currentUser') || null;
+                this.currentPage = 'login';
+                this.render();
+            }
+
+            loadConfig() {
+                const saved = localStorage.getItem('controlTotalConfig');
+                return saved ? JSON.parse(saved) : {
+                    businessName: 'CONTROL TOTAL',
+                    logo: '💼',
+                    mainColor: '#4f46e5',
+                    secondaryColor: '#06b6d4',
+                    accentColor: '#f59e0b'
+                };
+            }
+
+            loadData() {
+                const saved = localStorage.getItem('controlTotalData');
+                return saved ? JSON.parse(saved) : {
+                    sales: [],
+                    incomes: [],
+                    expenses: [],
+                    clients: []
+                };
+            }
+
+            loadPin() {
+                return localStorage.getItem('controlTotalPin') || '1234';
+            }
+
+            saveData() {
+                localStorage.setItem('controlTotalData', JSON.stringify(this.data));
+            }
+
+            saveConfig() {
+                localStorage.setItem('controlTotalConfig', JSON.stringify(this.config));
+            }
+
+            savePin(pin) {
+                this.pin = pin;
+                localStorage.setItem('controlTotalPin', pin);
+            }
+
+            formatMoney(value) {
+                return new Intl.NumberFormat('es-MX', {
+                    style: 'currency',
+                    currency: 'MXN'
+                }).format(value);
+            }
+
+            getTodayDate() {
+                return new Date().toISOString().split('T')[0];
+            }
+
+            login(pin) {
+                if (pin === this.pin) {
+                    this.currentUser = 'user';
+                    localStorage.setItem('currentUser', 'user');
+                    this.currentPage = 'dashboard';
+                    this.render();
+                } else {
+                    alert('❌ PIN incorrecto');
+                }
+            }
+
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('currentUser');
+                this.currentPage = 'login';
+                this.render();
+            }
+
+            // ==================== MÉTODOS DE DATOS ====================
+
+            addSale(sale) {
+                this.data.sales.push({
+                    id: Date.now(),
+                    ...sale
+                });
+                this.saveData();
+            }
+
+            addIncome(income) {
+                this.data.incomes.push({
+                    id: Date.now(),
+                    ...income
+                });
+                this.saveData();
+            }
+
+            addExpense(expense) {
+                this.data.expenses.push({
+                    id: Date.now(),
+                    ...expense
+                });
+                this.saveData();
+            }
+
+            addClient(client) {
+                this.data.clients.push({
+                    id: Date.now(),
+                    ...client
+                });
+                this.saveData();
+            }
+
+            deleteSale(id) {
+                this.data.sales = this.data.sales.filter(s => s.id !== id);
+                this.saveData();
+            }
+
+            deleteIncome(id) {
+                this.data.incomes = this.data.incomes.filter(i => i.id !== id);
+                this.saveData();
+            }
+
+            deleteExpense(id) {
+                this.data.expenses = this.data.expenses.filter(e => e.id !== id);
+                this.saveData();
+            }
+
+            deleteClient(id) {
+                this.data.clients = this.data.clients.filter(c => c.id !== id);
+                this.saveData();
+            }
+
+            // ==================== CÁLCULOS ====================
+
+            getTodayStats() {
+                const today = this.getTodayDate();
+                const todaySales = this.data.sales.filter(s => s.date === today);
+                const todayIncome = this.data.incomes
+                    .filter(i => i.date === today)
+                    .reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0);
+                const todayExpense = this.data.expenses
+                    .filter(e => e.date === today)
+                    .reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+                const todayProfit = todaySales.reduce((sum, s) => sum + ((parseFloat(s.price) || 0) - (parseFloat(s.cost) || 0)), 0);
+
+                return {
+                    sales: todaySales,
+                    income: todayIncome,
+                    expense: todayExpense,
+                    profit: todayProfit
+                };
+            }
+
+            // ==================== RENDER ====================
+
+            render() {
+                document.documentElement.style.setProperty('--main-color', this.config.mainColor);
+                document.documentElement.style.setProperty('--secondary-color', this.config.secondaryColor);
+                document.documentElement.style.setProperty('--accent-color', this.config.accentColor);
+
+                const app = document.getElementById('app');
+
+                if (!this.currentUser) {
+                    app.innerHTML = this.renderLogin();
+                } else {
+                    app.innerHTML = this.renderApp();
+                }
+
+                this.attachEvents();
+            }
+
+            renderLogin() {
+                return `
+                    <div class="login-container">
+                        <div class="login-box">
+                            <div class="logo">${this.config.logo}</div>
+                            <h1>${this.config.businessName}</h1>
+                            <p style="margin-bottom: 30px; color: var(--text-light);">Sistema de Control</p>
+                            
+                            <form id="loginForm">
+                                <input type="password" id="pinInput" class="pin-input" placeholder="0000" maxlength="6" required>
+                                <button type="submit" class="btn btn-primary">Ingresar</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderApp() {
+                const stats = this.getTodayStats();
+
+                return `
+                    <header>
+                        <div class="header-title">
+                            <div class="logo">${this.config.logo}</div>
+                            <h1>${this.config.businessName}</h1>
+                        </div>
+                        <div class="header-buttons">
+                            <button class="btn btn-small btn-danger" id="logoutBtn">🚪 Salir</button>
+                        </div>
+                    </header>
+
+                    <div class="container">
+                        <div class="nav-grid">
+                            <button class="nav-btn active" data-page="dashboard">📊 Dashboard</button>
+                            <button class="nav-btn" data-page="sales">🛍️ Venta</button>
+                            <button class="nav-btn" data-page="incomes">💰 Ingreso</button>
+                            <button class="nav-btn" data-page="expenses">💸 Gasto</button>
+                            <button class="nav-btn" data-page="clients">👥 Clientes</button>
+                            <button class="nav-btn" data-page="tickets">🎫 Tickets</button>
+                            <button class="nav-btn" data-page="cut">📅 Corte</button>
+                            <button class="nav-btn" data-page="settings">⚙️ Config</button>
+                        </div>
+
+                        <div id="content">
+                            ${this.renderDashboard()}
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderDashboard() {
+                const stats = this.getTodayStats();
+                const totalSales = stats.sales.reduce((sum, s) => sum + (parseFloat(s.price) || 0), 0);
+                
+                return `
+                    <h2>📊 Dashboard</h2>
+                    
+                    <div class="grid-2">
+                        <div class="stat-card">
+                            <div class="label">💵 Ganancia Hoy</div>
+                            <div class="value success">${this.formatMoney(stats.profit)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">💰 Ingresos Hoy</div>
+                            <div class="value info">${this.formatMoney(stats.income)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">💸 Gastos Hoy</div>
+                            <div class="value warning">${this.formatMoney(stats.expense)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">🛍️ Ventas Hoy</div>
+                            <div class="value">${stats.sales.length}</div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 30px;">
+                        <h3>📝 Últimas Ventas</h3>
+                        <div class="grid-list">
+                            ${stats.sales.length === 0 
+                                ? '<p style="color: var(--text-light); text-align: center;">No hay ventas hoy</p>'
+                                : stats.sales.slice(-5).reverse().map(sale => `
+                                    <div class="row">
+                                        <div>
+                                            <div class="row-label">Producto</div>
+                                            <div class="row-value">${sale.product}</div>
+                                        </div>
+                                        <div>
+                                            <div class="row-label">Cliente</div>
+                                            <div class="row-value">${sale.client}</div>
+                                        </div>
+                                        <div>
+                                            <div class="row-label">Total</div>
+                                            <div class="row-value success">${this.formatMoney(sale.price)}</div>
+                                        </div>
+                                    </div>
+                                `).join('')
+                            }
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; background: var(--bg-color); padding: 20px; border-radius: 8px; border-left: 3px solid var(--main-color);">
+                        <h3 style="margin-bottom: 15px;">📊 Resumen Hoy</h3>
+                        <div class="summary">
+                            <span class="summary-label">Ventas:</span>
+                            <span class="summary-value">${this.formatMoney(totalSales)}</span>
+                        </div>
+                        <div class="summary">
+                            <span class="summary-label">Ganancia:</span>
+                            <span class="summary-value success">${this.formatMoney(stats.profit)}</span>
+                        </div>
+                        <div class="summary">
+                            <span class="summary-label">Ingresos Extra:</span>
+                            <span class="summary-value info">${this.formatMoney(stats.income)}</span>
+                        </div>
+                        <div class="summary">
+                            <span class="summary-label">Gastos:</span>
+                            <span class="summary-value warning">${this.formatMoney(stats.expense)}</span>
+                        </div>
+                        <div class="summary" style="border-left-color: var(--accent-color); margin-top: 10px; padding-top: 10px; border-top: 2px solid var(--accent-color);">
+                            <span class="summary-label" style="font-weight: bold;">Ganancia Real:</span>
+                            <span class="summary-value success" style="font-size: 20px;">${this.formatMoney(stats.profit + stats.income - stats.expense)}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderSalesForm() {
+                return `
+                    <h2>🛍️ Nueva Venta</h2>
+                    
+                    <div class="card">
+                        <form id="saleForm">
+                            <div class="form-group">
+                                <input type="date" id="saleDate" value="${this.getTodayDate()}">
+                                <input type="text" id="saleClient" placeholder="Cliente" required>
+                                <input type="tel" id="saleWhatsapp" placeholder="WhatsApp">
+                                <input type="text" id="saleProduct" placeholder="Producto" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" id="saleCost" placeholder="Costo" step="0.01">
+                                <input type="number" id="salePrice" placeholder="Precio de venta" step="0.01" required>
+                                <input type="number" id="saleAdvance" placeholder="Anticipo" step="0.01">
+                                <select id="saleStatus">
+                                    <option value="pagado">Pagado</option>
+                                    <option value="apartado">Apartado</option>
+                                    <option value="pendiente">Pendiente</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">➕ Agregar Venta</button>
+                        </form>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">Ventas Registradas</h3>
+                    <div class="grid-list">
+                        ${this.data.sales.length === 0 
+                            ? '<p style="color: var(--text-light);">No hay ventas registradas</p>'
+                            : this.data.sales.slice().reverse().map(sale => `
+                                <div class="row">
+                                    <div>
+                                        <div class="row-label">Producto</div>
+                                        <div class="row-value">${sale.product}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Cliente</div>
+                                        <div class="row-value">${sale.client}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Total</div>
+                                        <div class="row-value success">${this.formatMoney(sale.price)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Ganancia</div>
+                                        <div class="row-value" style="color: #10b981;">${this.formatMoney(sale.price - sale.cost)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Estado</div>
+                                        <div class="row-value">${sale.status}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <button class="btn btn-small btn-danger" onclick="app.deleteSale(${sale.id})">🗑️</button>
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                `;
+            }
+
+            renderIncomes() {
+                const total = this.data.incomes.reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0);
+
+                return `
+                    <h2>💰 Ingresos</h2>
+                    
+                    <div class="stat-card">
+                        <div class="label">Total Ingresos</div>
+                        <div class="value info">${this.formatMoney(total)}</div>
+                    </div>
+
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>Nuevo Ingreso</h3>
+                        <form id="incomeForm">
+                            <div class="form-group">
+                                <input type="date" id="incomeDate" value="${this.getTodayDate()}">
+                                <input type="text" id="incomeType" placeholder="Tipo de ingreso" value="Comisión">
+                                <input type="text" id="incomeConcept" placeholder="Concepto">
+                                <input type="number" id="incomeAmount" placeholder="Monto" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="incomeNote" placeholder="Nota"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">➕ Agregar Ingreso</button>
+                        </form>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">Historial</h3>
+                    <div class="grid-list">
+                        ${this.data.incomes.length === 0 
+                            ? '<p style="color: var(--text-light);">No hay ingresos registrados</p>'
+                            : this.data.incomes.slice().reverse().map(income => `
+                                <div class="row">
+                                    <div>
+                                        <div class="row-label">Tipo</div>
+                                        <div class="row-value">${income.type}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Concepto</div>
+                                        <div class="row-value">${income.concept}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Monto</div>
+                                        <div class="row-value info">${this.formatMoney(income.amount)}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <button class="btn btn-small btn-danger" onclick="app.deleteIncome(${income.id})">🗑️</button>
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                `;
+            }
+
+            renderExpenses() {
+                const total = this.data.expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
+                return `
+                    <h2>💸 Gastos</h2>
+                    
+                    <div class="stat-card">
+                        <div class="label">Total Gastos</div>
+                        <div class="value warning">${this.formatMoney(total)}</div>
+                    </div>
+
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>Nuevo Gasto</h3>
+                        <form id="expenseForm">
+                            <div class="form-group">
+                                <input type="date" id="expenseDate" value="${this.getTodayDate()}">
+                                <input type="text" id="expenseType" placeholder="Tipo de gasto" value="Mercancía">
+                                <input type="text" id="expenseConcept" placeholder="Concepto">
+                                <input type="number" id="expenseAmount" placeholder="Monto" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="expenseNote" placeholder="Nota"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">➕ Agregar Gasto</button>
+                        </form>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">Historial</h3>
+                    <div class="grid-list">
+                        ${this.data.expenses.length === 0 
+                            ? '<p style="color: var(--text-light);">No hay gastos registrados</p>'
+                            : this.data.expenses.slice().reverse().map(expense => `
+                                <div class="row">
+                                    <div>
+                                        <div class="row-label">Tipo</div>
+                                        <div class="row-value">${expense.type}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Concepto</div>
+                                        <div class="row-value">${expense.concept}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Monto</div>
+                                        <div class="row-value warning">${this.formatMoney(expense.amount)}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <button class="btn btn-small btn-danger" onclick="app.deleteExpense(${expense.id})">🗑️</button>
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                `;
+            }
+
+            renderClients() {
+                return `
+                    <h2>👥 Clientes</h2>
+                    
+                    <div class="card">
+                        <h3>Nuevo Cliente</h3>
+                        <form id="clientForm">
+                            <div class="form-group">
+                                <input type="text" id="clientName" placeholder="Nombre" required>
+                                <input type="tel" id="clientWhatsapp" placeholder="WhatsApp">
+                                <input type="text" id="clientPurchases" placeholder="¿Qué compra?">
+                            </div>
+                            <div class="form-group">
+                                <textarea id="clientNotes" placeholder="Notas"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">➕ Agregar Cliente</button>
+                        </form>
+                    </div>
+
+                    <h3 style="margin-top: 30px;">Clientes Registrados</h3>
+                    <div class="grid-list">
+                        ${this.data.clients.length === 0 
+                            ? '<p style="color: var(--text-light);">No hay clientes registrados</p>'
+                            : this.data.clients.map(client => `
+                                <div class="row">
+                                    <div>
+                                        <div class="row-label">Nombre</div>
+                                        <div class="row-value">${client.name}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">WhatsApp</div>
+                                        <div class="row-value">${client.whatsapp || '-'}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Compra</div>
+                                        <div class="row-value">${client.purchases || '-'}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <button class="btn btn-small btn-danger" onclick="app.deleteClient(${client.id})">🗑️</button>
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                `;
+            }
+
+            renderTickets() {
+                return `
+                    <h2>🎫 Tickets</h2>
+                    
+                    <div class="grid-list">
+                        ${this.data.sales.length === 0 
+                            ? '<p style="color: var(--text-light); text-align: center;">No hay ventas para generar tickets</p>'
+                            : this.data.sales.slice().reverse().map(sale => `
+                                <div class="card">
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                                        <div>
+                                            <div class="row-label">Folio</div>
+                                            <div class="row-value">${String(sale.id).slice(-6)}</div>
+                                        </div>
+                                        <div>
+                                            <div class="row-label">Cliente</div>
+                                            <div class="row-value">${sale.client}</div>
+                                        </div>
+                                        <div>
+                                            <div class="row-label">Producto</div>
+                                            <div class="row-value">${sale.product}</div>
+                                        </div>
+                                        <div>
+                                            <div class="row-label">Total</div>
+                                            <div class="row-value success">${this.formatMoney(sale.price)}</div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-small btn-primary" onclick="app.showTicket('${sale.id}')">👁️ Ver Ticket</button>
+                                    <button class="btn btn-small btn-secondary" onclick="app.downloadTicket('${sale.id}')">📥 Descargar</button>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                `;
+            }
+
+            renderCut() {
+                const today = this.getTodayDate();
+                const todaySales = this.data.sales.filter(s => s.date === today);
+                const todayIncome = this.data.incomes.filter(i => i.date === today).reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0);
+                const todayExpense = this.data.expenses.filter(e => e.date === today).reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+                const todayProfit = todaySales.reduce((sum, s) => sum + ((parseFloat(s.price) || 0) - (parseFloat(s.cost) || 0)), 0);
+                const totalSales = todaySales.reduce((sum, s) => sum + (parseFloat(s.price) || 0), 0);
+
+                return `
+                    <h2>📅 Corte Diario - ${new Date(today).toLocaleDateString('es-MX')}</h2>
+                    
+                    <div class="grid-2">
+                        <div class="stat-card">
+                            <div class="label">🛍️ Total Ventas</div>
+                            <div class="value">${this.formatMoney(totalSales)}</div>
+                            <small style="color: var(--text-light);">${todaySales.length} venta(s)</small>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">💵 Ganancia Ventas</div>
+                            <div class="value success">${this.formatMoney(todayProfit)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">💰 Ingresos Extra</div>
+                            <div class="value info">${this.formatMoney(todayIncome)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">💸 Gastos</div>
+                            <div class="value warning">${this.formatMoney(todayExpense)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">✨ Ganancia Real</div>
+                            <div class="value success">${this.formatMoney(todayProfit + todayIncome - todayExpense)}</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="app.exportCut()" style="margin-top: 20px; margin-bottom: 30px;">📥 Descargar Corte</button>
+
+                    <h3>Ventas de Hoy</h3>
+                    <div class="grid-list">
+                        ${todaySales.length === 0 
+                            ? '<p style="color: var(--text-light);">No hay ventas hoy</p>'
+                            : todaySales.map(sale => `
+                                <div class="row">
+                                    <div>
+                                        <div class="row-label">Producto</div>
+                                        <div class="row-value">${sale.product}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Cliente</div>
+                                        <div class="row-value">${sale.client}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Total</div>
+                                        <div class="row-value success">${this.formatMoney(sale.price)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="row-label">Ganancia</div>
+                                        <div class="row-value" style="color: #10b981;">${this.formatMoney(sale.price - sale.cost)}</div>
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                `;
+            }
+
+            renderSettings() {
+                return `
+                    <h2>⚙️ Configuración</h2>
+                    
+                    <div class="card">
+                        <h3>🎨 Personalización</h3>
+                        <div class="form-group">
+                            <div>
+                                <label style="display: block; color: var(--text-light); margin-bottom: 8px;">Nombre del Negocio</label>
+                                <input type="text" id="configName" value="${this.config.businessName}">
+                            </div>
+                            <div>
+                                <label style="display: block; color: var(--text-light); margin-bottom: 8px;">Logo (Emoji)</label>
+                                <input type="text" id="configLogo" value="${this.config.logo}" maxlength="2">
+                            </div>
+                            <div>
+                                <label style="display: block; color: var(--text-light); margin-bottom: 8px;">Color Principal</label>
+                                <input type="color" id="configMainColor" value="${this.config.mainColor}">
+                            </div>
+                            <div>
+                                <label style="display: block; color: var(--text-light); margin-bottom: 8px;">Color Secundario</label>
+                                <input type="color" id="configSecondaryColor" value="${this.config.secondaryColor}">
+                            </div>
+                            <div>
+                                <label style="display: block; color: var(--text-light); margin-bottom: 8px;">Color de Acento</label>
+                                <input type="color" id="configAccentColor" value="${this.config.accentColor}">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="app.saveConfig()">💾 Guardar Configuración</button>
+                    </div>
+
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>🔐 Cambiar PIN</h3>
+                        <form id="changePinForm">
+                            <div class="form-group">
+                                <input type="password" id="newPin" placeholder="Nuevo PIN" maxlength="6" required>
+                                <input type="password" id="confirmPin" placeholder="Confirmar PIN" maxlength="6" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Cambiar PIN</button>
+                        </form>
+                    </div>
+
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>📊 Estadísticas</h3>
+                        <div class="summary">
+                            <span>Total Ventas:</span>
+                            <span class="summary-value">${this.data.sales.length}</span>
+                        </div>
+                        <div class="summary">
+                            <span>Total Ingresos:</span>
+                            <span class="summary-value">${this.data.incomes.length}</span>
+                        </div>
+                        <div class="summary">
+                            <span>Total Gastos:</span>
+                            <span class="summary-value">${this.data.expenses.length}</span>
+                        </div>
+                        <div class="summary">
+                            <span>Total Clientes:</span>
+                            <span class="summary-value">${this.data.clients.length}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            showTicket(id) {
+                const sale = this.data.sales.find(s => String(s.id) === String(id));
+                if (!sale) return;
+
+                const ticket = `
+FOLIO: ${String(sale.id).slice(-6)}
+
+CLIENTE: ${sale.client}
+WHATSAPP: ${sale.whatsapp || 'N/A'}
+
+PRODUCTO: ${sale.product}
+
+PRECIO: ${this.formatMoney(sale.price)}
+ANTICIPO: ${this.formatMoney(sale.advance)}
+RESTANTE: ${this.formatMoney(sale.price - sale.advance)}
+
+MÉTODO: ${sale.paymentMethod || 'No especificado'}
+ESTADO: ${sale.status}
+
+FECHA: ${new Date(sale.date).toLocaleDateString('es-MX')}
+HORA: ${new Date().toLocaleTimeString('es-MX')}
+
+¡GRACIAS POR TU COMPRA!
+                `;
+
+                alert(ticket);
+            }
+
+            downloadTicket(id) {
+                const sale = this.data.sales.find(s => String(s.id) === String(id));
+                if (!sale) return;
+
+                const ticket = `
+FOLIO: ${String(sale.id).slice(-6)}
+CLIENTE: ${sale.client}
+WHATSAPP: ${sale.whatsapp || 'N/A'}
+PRODUCTO: ${sale.product}
+PRECIO: ${this.formatMoney(sale.price)}
+ANTICIPO: ${this.formatMoney(sale.advance)}
+RESTANTE: ${this.formatMoney(sale.price - sale.advance)}
+MÉTODO: ${sale.paymentMethod || 'No especificado'}
+ESTADO: ${sale.status}
+FECHA: ${new Date(sale.date).toLocaleDateString('es-MX')}
+HORA: ${new Date().toLocaleTimeString('es-MX')}
+
+¡GRACIAS POR TU COMPRA!
+                `;
+
+                const element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(ticket));
+                element.setAttribute('download', `ticket_${String(sale.id).slice(-6)}.txt`);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+            }
+
+            exportCut() {
+                const today = this.getTodayDate();
+                const todaySales = this.data.sales.filter(s => s.date === today);
+                const todayIncome = this.data.incomes.filter(i => i.date === today).reduce((sum, i) => sum + (parseFloat(i.amount) || 0), 0);
+                const todayExpense = this.data.expenses.filter(e => e.date === today).reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+                const todayProfit = todaySales.reduce((sum, s) => sum + ((parseFloat(s.price) || 0) - (parseFloat(s.cost) || 0)), 0);
+                const totalSales = todaySales.reduce((sum, s) => sum + (parseFloat(s.price) || 0), 0);
+
+                const cut = `
+CORTE DIARIO - ${this.config.businessName}
+Fecha: ${new Date(today).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}
+
+═══════════════════════════════════════
+RESUMEN DE VENTAS
+───────────────────────────────────────
+Total ventas: ${this.formatMoney(totalSales)}
+Ganancia en ventas: ${this.formatMoney(todayProfit)}
+Cantidad de ventas: ${todaySales.length}
+
+═══════════════════════════════════════
+INGRESOS Y GASTOS
+───────────────────────────────────────
+Total ingresos extra: ${this.formatMoney(todayIncome)}
+Total gastos: ${this.formatMoney(todayExpense)}
+
+═══════════════════════════════════════
+GANANCIA REAL
+───────────────────────────────────────
+Ganancia neta: ${this.formatMoney(todayProfit + todayIncome - todayExpense)}
+
+═══════════════════════════════════════
+DETALLE DE VENTAS
+───────────────────────────────────────
+${todaySales.map((s, i) => `${i+1}. ${s.product} | Cliente: ${s.client} | ${this.formatMoney(s.price)}`).join('\n')}
+
+═══════════════════════════════════════
+                `;
+
+                const element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(cut));
+                element.setAttribute('download', `corte_${today}.txt`);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+            }
+
+            saveConfig() {
+                this.config.businessName = document.getElementById('configName').value;
+                this.config.logo = document.getElementById('configLogo').value;
+                this.config.mainColor = document.getElementById('configMainColor').value;
+                this.config.secondaryColor = document.getElementById('configSecondaryColor').value;
+                this.config.accentColor = document.getElementById('configAccentColor').value;
+                this.saveConfig();
+                alert('✅ Configuración guardada');
+                this.render();
+            }
+
+            attachEvents() {
+                // Login
+                const loginForm = document.getElementById('loginForm');
+                if (loginForm) {
+                    loginForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const pin = document.getElementById('pinInput').value;
+                        this.login(pin);
+                    });
+                }
+
+                // Logout
+                const logoutBtn = document.getElementById('logoutBtn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', () => this.logout());
+                }
+
+                // Navigation
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const page = e.target.dataset.page;
+                        this.currentPage = page;
+                        this.render();
+                    });
+                });
+
+                // Forms
+                const saleForm = document.getElementById('saleForm');
+                if (saleForm) {
+                    saleForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.addSale({
+                            date: document.getElementById('saleDate').value,
+                            client: document.getElementById('saleClient').value,
+                            whatsapp: document.getElementById('saleWhatsapp').value,
+                            product: document.getElementById('saleProduct').value,
+                            cost: parseFloat(document.getElementById('saleCost').value) || 0,
+                            price: parseFloat(document.getElementById('salePrice').value) || 0,
+                            advance: parseFloat(document.getElementById('saleAdvance').value) || 0,
+                            status: document.getElementById('saleStatus').value,
+                            paymentMethod: 'Efectivo'
+                        });
+                        saleForm.reset();
+                        saleForm.elements['saleDate'].value = this.getTodayDate();
+                        this.render();
+                    });
+                }
+
+                const incomeForm = document.getElementById('incomeForm');
+                if (incomeForm) {
+                    incomeForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.addIncome({
+                            date: document.getElementById('incomeDate').value,
+                            type: document.getElementById('incomeType').value,
+                            concept: document.getElementById('incomeConcept').value,
+                            amount: parseFloat(document.getElementById('incomeAmount').value) || 0,
+                            note: document.getElementById('incomeNote').value,
+                            paymentMethod: 'Efectivo'
+                        });
+                        incomeForm.reset();
+                        incomeForm.elements['incomeDate'].value = this.getTodayDate();
+                        this.render();
+                    });
+                }
+
+                const expenseForm = document.getElementById('expenseForm');
+                if (expenseForm) {
+                    expenseForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.addExpense({
+                            date: document.getElementById('expenseDate').value,
+                            type: document.getElementById('expenseType').value,
+                            concept: document.getElementById('expenseConcept').value,
+                            amount: parseFloat(document.getElementById('expenseAmount').value) || 0,
+                            note: document.getElementById('expenseNote').value,
+                            paymentMethod: 'Efectivo'
+                        });
+                        expenseForm.reset();
+                        expenseForm.elements['expenseDate'].value = this.getTodayDate();
+                        this.render();
+                    });
+                }
+
+                const clientForm = document.getElementById('clientForm');
+                if (clientForm) {
+                    clientForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.addClient({
+                            name: document.getElementById('clientName').value,
+                            whatsapp: document.getElementById('clientWhatsapp').value,
+                            purchases: document.getElementById('clientPurchases').value,
+                            notes: document.getElementById('clientNotes').value
+                        });
+                        clientForm.reset();
+                        this.render();
+                    });
+                }
+
+                const changePinForm = document.getElementById('changePinForm');
+                if (changePinForm) {
+                    changePinForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        const newPin = document.getElementById('newPin').value;
+                        const confirmPin = document.getElementById('confirmPin').value;
+                        if (newPin === confirmPin) {
+                            this.savePin(newPin);
+                            alert('✅ PIN cambiado correctamente');
+                            changePinForm.reset();
+                        } else {
+                            alert('❌ Los PINs no coinciden');
+                        }
+                    });
+                }
+            }
+        }
+
+        // Render content based on page
+        const originalRender = ControlTotal.prototype.render;
+        ControlTotal.prototype.render = function() {
+            originalRender.call(this);
+
+            if (this.currentUser) {
+                const content = document.getElementById('content');
+                if (content) {
+                    switch(this.currentPage) {
+                        case 'dashboard':
+                            content.innerHTML = this.renderDashboard();
+                            break;
+                        case 'sales':
+                            content.innerHTML = this.renderSalesForm();
+                            break;
+                        case 'incomes':
+                            content.innerHTML = this.renderIncomes();
+                            break;
+                        case 'expenses':
+                            content.innerHTML = this.renderExpenses();
+                            break;
+                        case 'clients':
+                            content.innerHTML = this.renderClients();
+                            break;
+                        case 'tickets':
+                            content.innerHTML = this.renderTickets();
+                            break;
+                        case 'cut':
+                            content.innerHTML = this.renderCut();
+                            break;
+                        case 'settings':
+                            content.innerHTML = this.renderSettings();
+                            break;
+                    }
+                }
+
+                // Update nav buttons
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.page === this.currentPage) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+
+            this.attachEvents();
+        };
+
+        // Inicializar app
+        const app = new ControlTotal();
+    </script>
+</body>
+</html>
